@@ -2,19 +2,18 @@
 Using the interface and the Card class, create a class called CardDeckArray that implement a
 CardDeckInterface using an array of Cards.
  */
-public class CardDeckArray implements CardDeckInterface
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class CardDeckArrayList implements CardDeckInterface
 {
-    protected Card[] cardArray;
-    protected int topIndex = -1;
-    //There are 52 cards in a deck
-    private final int MAXNUM = 52;
-    //collects points to find a winner
+    protected ArrayList<Card> cardArray;
     private int playerOneCount = 0;
     private int playerTwoCount = 0;
 
-    public CardDeckArray()
+    public CardDeckArrayList()
     {
-        cardArray = new Card[MAXNUM];
+        cardArray = new ArrayList<>();
         //using the interface as the type for the reference variable
         insertIntoDeck();
     }
@@ -28,9 +27,8 @@ public class CardDeckArray implements CardDeckInterface
             //suits, hearts, diamond, spade and clubs = 4
             for(int j = 0; j < 4; j++)
             {
-                topIndex++;
                 //calls the constructor from Card.java, each element is passed to the arrays
-                cardArray[topIndex] = new Card(j, i);
+                cardArray.add(new Card(j, i));
             }
             i++;
         }
@@ -40,10 +38,10 @@ public class CardDeckArray implements CardDeckInterface
     public Card draw()
     {
         //if there are elements in the deck
-        if(topIndex >= 0)
+        if(cardArray.size() > 0)
         {
-            Card holder = cardArray[topIndex];
-            topIndex--;
+            Card holder = cardArray.get(cardArray.size() - 1);
+            cardArray.remove(holder);
             return holder;
         }
         return null;
@@ -52,22 +50,14 @@ public class CardDeckArray implements CardDeckInterface
     @Override
     public void shuffle()
     {
-        //we are looping through the cards in the deck
-        for (int i = 0; i < topIndex + 1; i++)
-        {
-            //we get a random number
-            int randomNum = (int)(Math.random() * i);
-            //we get the card and replaced with the random number
-            Card holder = cardArray[randomNum];
-            cardArray[randomNum] = cardArray[i];
-            cardArray[i] = holder;
-        }
+        //https://www.geeksforgeeks.org/shuffle-or-randomize-a-list-in-java/
+        Collections.shuffle(cardArray);
     }
 
     @Override
     public int size()
     {
-        return topIndex +1;
+        return cardArray.size();
     }
 
     //this method will start a game of 6 rounds, each player will draw their cards, randomly
